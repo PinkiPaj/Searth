@@ -1,6 +1,8 @@
 import cv2
 
 import numpy as np
+
+
 # def empty(a):
 #     pass
 #
@@ -35,16 +37,29 @@ import numpy as np
 #         ver = hor
 #     return ver
 
-imgg = 'image/test3.jpeg'
+def getContours(img):
+    contours,hierarchy=cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        print(area)
+        cv2.drawContours(imgContour,cnt,-1,(255,0,0),3)
+
+imgg = 'image/red objects.jpg'
 
 lower = np.array([0,113,108])
 upper = np.array([6,255,255])
 
 img = cv2.imread(imgg)
+imgContour = img.copy()
 imgHSV = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 mask = cv2.inRange(imgHSV,lower,upper)
 imgResult = cv2.bitwise_and(img,img,mask=mask)
-cv2.imshow("Result", imgResult)
+imgCanny = cv2.Canny(imgResult,1,1)
+
+getContours(imgCanny)
+
+cv2.imshow("Result", imgContour)
+cv2.imwrite("image\Result.jpg",imgContour)
 cv2.waitKey(0)
 
 # cv2.namedWindow('TrackBars')
